@@ -13,6 +13,8 @@ class PostList extends StatelessWidget {
     await favoritePosts.fetchData();
     await Provider.of<Posts>(context, listen: false)
         .fetchData(favoritePosts.items);
+
+    print(favoritePosts.items);
   }
 
   @override

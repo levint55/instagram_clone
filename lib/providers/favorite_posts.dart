@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FavoritePosts with ChangeNotifier {
-  final Map<String, bool> _items = {};
+  Map<String, bool> _items = {};
 
   Map<String, bool> get items {
     return _items;
   }
 
   Future fetchData() async {
+    _items = {};
     final user = FirebaseAuth.instance.currentUser!;
     var query =
         FirebaseFirestore.instance.collection('favorites/${user.uid}/posts');
