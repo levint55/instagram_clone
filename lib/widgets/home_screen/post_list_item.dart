@@ -7,40 +7,42 @@ class PostListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint('Render -> Post list item');
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(right: 10),
-                child: CircleAvatar(
+                margin: const EdgeInsets.only(right: 10),
+                child: const CircleAvatar(
                   backgroundImage:
                       NetworkImage('https://via.placeholder.com/150x150'),
                 ),
               ),
-              Text('Username')
+              const Text('Username')
             ],
           ),
-          Center(
+          const Center(
             child: Image(
                 image: NetworkImage('https://via.placeholder.com/150x150')),
           ),
           Row(
             children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.favorite_outline)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.comment)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.send)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.bookmark_outline)),
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.favorite_outline)),
+              IconButton(onPressed: () {}, icon: const Icon(Icons.comment)),
+              IconButton(onPressed: () {}, icon: const Icon(Icons.send)),
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.bookmark_outline)),
             ],
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('3 likes'),
-              Text('UserID1 This is caption'),
-              Text('View all 0 comment'),
+              const Text('3 likes'),
+              const Text('UserID1 This is caption'),
+              const Text('View all 0 comment'),
               Text(
                 DateTime.now().toIso8601String(),
               )

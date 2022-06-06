@@ -10,7 +10,7 @@ class PostList extends StatelessWidget {
     debugPrint('Render -> Post list');
     return ListView.builder(
       itemCount: dummyData.length,
-      itemBuilder: (context, index) => PostListItem(),
+      itemBuilder: (context, index) => const PostListItem(),
     );
   }
 }
