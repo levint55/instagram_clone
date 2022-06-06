@@ -1,16 +1,24 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagram_clone/providers/posts.dart';
+import 'package:provider/provider.dart';
 
 class AddPostForm extends StatefulWidget {
-  const AddPostForm({Key? key}) : super(key: key);
+  final void Function(int) navigateTo;
+
+  const AddPostForm(this.navigateTo, {Key? key}) : super(key: key);
 
   @override
   State<AddPostForm> createState() => _AddPostFormState();
 }
 
 class _AddPostFormState extends State<AddPostForm> {
+  bool _isLoading = false;
   File? _pickedImage;
   String? _caption;
   final _formKey = GlobalKey<FormState>();
@@ -27,20 +35,45 @@ class _AddPostFormState extends State<AddPostForm> {
     }
   }
 
-  void trySubmit() {
+  void trySubmit() async {
+    setState(() {
+      _isLoading = true;
+    });
     _formKey.currentState?.save();
     final isValid = _formKey.currentState?.validate();
 
     if (_pickedImage == null) {
+      setState(() {
+        _isLoading = false;
+      });
       return;
     }
 
     if (isValid == null) {
+      setState(() {
+        _isLoading = false;
+      });
       return;
     }
 
-    if (isValid) {
-      print('Valid');
+    try {
+      if (isValid) {
+        await Provider.of<Posts>(context, listen: false)
+            .addData(_caption!, _pickedImage!);
+
+        setState(() {
+          _caption = null;
+          _pickedImage = null;
+          _isLoading = false;
+        });
+
+        // Change tabs to home
+        widget.navigateTo(0);
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -80,7 +113,10 @@ class _AddPostFormState extends State<AddPostForm> {
                     child: Text('Please add image'),
                   ),
                 ),
-          ElevatedButton(onPressed: trySubmit, child: const Text('Add Post'))
+          _isLoading
+              ? const CircularProgressIndicator()
+              : ElevatedButton(
+                  onPressed: trySubmit, child: const Text('Add Post'))
         ],
       ),
     );

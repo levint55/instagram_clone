@@ -12,14 +12,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Widget> _page = [
-    const HomeElement(),
-    const Placeholder(),
-    const AddPostScreen(),
-    const Placeholder(),
-    const Placeholder(),
-  ];
+  List<Widget> _page = [];
   int _selectedPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _page = [
+      const HomeElement(),
+      const Placeholder(),
+      AddPostScreen(navigateToPage),
+      const Placeholder(),
+      const Placeholder(),
+    ];
+  }
+
+  void navigateToPage(int index) {
+    setState(() {
+      _selectedPage = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
