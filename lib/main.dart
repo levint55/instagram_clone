@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/firebase_options.dart';
+import 'package:instagram_clone/screens/add_post_screen.dart';
 import 'package:instagram_clone/screens/home_screen.dart';
 
 void main() async {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Instagram',
-      home: HomeScreen(),
+      home: AddPostScreen(),
     );
   }
 }

@@ -5,6 +5,7 @@ class PostListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Render -> Post list item');
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       child: Column(

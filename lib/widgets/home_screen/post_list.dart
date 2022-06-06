@@ -7,6 +7,7 @@ class PostList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Render -> Post list');
     return ListView.builder(
       itemCount: dummyData.length,
       itemBuilder: (context, index) => PostListItem(),
