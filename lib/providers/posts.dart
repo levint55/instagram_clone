@@ -26,25 +26,20 @@ class Posts with ChangeNotifier {
     return post;
   }
 
-  Future incrementFavorite(String id) async {
-    final query = FirebaseFirestore.instance.collection('posts').doc(id);
-    final post = getPostWithId(id);
-    post?.likes++;
-    await query.update({'likes': post?.likes});
-  }
-
-  Future decrementFavorite(String id) async {
-    final query = FirebaseFirestore.instance.collection('posts').doc(id);
-    final post = getPostWithId(id);
-    post?.likes--;
-    await query.update({'likes': post?.likes});
-  }
-
   Future fetchData(Map<String, bool> favoritePosts,
-      [bool showFavoriteOnly = false]) async {
+      [bool showFavoriteOnly = false,
+      bool showCurrentUserPosts = false]) async {
+    final user = FirebaseAuth.instance.currentUser;
     var query = FirebaseFirestore.instance.collection('posts');
 
-    final snapshot = await query.get();
+    QuerySnapshot<Map<String, dynamic>> snapshot;
+
+    if (showCurrentUserPosts) {
+      snapshot = await query.where('authorId', isEqualTo: user?.uid).get();
+    } else {
+      snapshot = await query.get();
+    }
+
     var docs = snapshot.docs;
 
     if (showFavoriteOnly) {
@@ -52,7 +47,6 @@ class Posts with ChangeNotifier {
         return favoritePosts[element.id] ?? false;
       }).toList();
     }
-
     List<Post> newItems = docs.map((e) {
       var data = e.data();
       if (favoritePosts.containsKey(e.id)) {

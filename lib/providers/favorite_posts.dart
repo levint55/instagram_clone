@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/providers/posts.dart';
+import 'package:instagram_clone/models/post.dart';
 import 'package:provider/provider.dart';
 
 class FavoritePosts with ChangeNotifier {
@@ -32,19 +32,24 @@ class FavoritePosts with ChangeNotifier {
     var query = FirebaseFirestore.instance
         .collection('favorites/${user.uid}/posts')
         .doc(id);
+    Provider.of<Post>(context, listen: false).id = id;
+
+    await Provider.of<Post>(context, listen: false).fetchData();
 
     if (_items.containsKey(id)) {
       _items[id] = !_items[id]!;
       await query.update({'isFavorite': _items[id]});
+      Provider.of<Post>(context, listen: false).isFavorite = _items[id];
       if (_items[id]!) {
-        await Provider.of<Posts>(context, listen: false).incrementFavorite(id);
+        await Provider.of<Post>(context, listen: false).incrementFavorite();
       } else {
-        await Provider.of<Posts>(context, listen: false).decrementFavorite(id);
+        await Provider.of<Post>(context, listen: false).decrementFavorite();
       }
     } else {
       _items[id] = true;
       await query.set({'isFavorite': _items[id]});
-      await Provider.of<Posts>(context, listen: false).incrementFavorite(id);
+      Provider.of<Post>(context, listen: false).isFavorite = _items[id];
+      await Provider.of<Post>(context, listen: false).incrementFavorite();
     }
 
     notifyListeners();

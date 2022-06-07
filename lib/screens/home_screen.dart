@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/screens/add_post_screen.dart';
 import 'package:instagram_clone/screens/favorite_screen.dart';
+import 'package:instagram_clone/screens/profile_screen.dart';
 import 'package:instagram_clone/widgets/home_screen/post_list.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const Placeholder(),
       AddPostScreen(navigateToPage),
       const FavoriteScreen(),
-      const Placeholder(),
+      const ProfileScreen(),
     ];
   }
 

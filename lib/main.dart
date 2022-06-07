@@ -2,11 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/firebase_options.dart';
+import 'package:instagram_clone/models/post.dart';
 import 'package:instagram_clone/providers/current_user.dart';
 import 'package:instagram_clone/providers/favorite_posts.dart';
 import 'package:instagram_clone/providers/posts.dart';
 import 'package:instagram_clone/screens/auth_screen.dart';
 import 'package:instagram_clone/screens/home_screen.dart';
+import 'package:instagram_clone/screens/post_detail_screen.dart';
 import 'package:instagram_clone/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +33,11 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<CurrentUser>(
           create: (context) => CurrentUser(null, null),
-        )
+        ),
+        ChangeNotifierProvider<Post>(
+          create: (context) =>
+              Post(null, null, null, null, null, null, null, null),
+        ),
       ],
       child: MaterialApp(
         title: 'Instagram',
@@ -59,6 +65,7 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           HomeScreen.routeName: (context) => const HomeScreen(),
+          PostDetailScreen.routeName: (context) => const PostDetailScreen(),
         },
       ),
     );
