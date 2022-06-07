@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post.dart';
 import 'package:instagram_clone/providers/favorite_posts.dart';
+import 'package:instagram_clone/providers/posts.dart';
 import 'package:provider/provider.dart';
 
 class PostListItem extends StatefulWidget {
@@ -17,11 +18,13 @@ class PostListItem extends StatefulWidget {
 
 class _PostListItemState extends State<PostListItem> {
   late bool _isFavorite;
+  late int _likes;
 
   @override
   void initState() {
     super.initState();
     _isFavorite = widget.post.isFavorite;
+    _likes = widget.post.likes;
   }
 
   @override
@@ -53,10 +56,11 @@ class _PostListItemState extends State<PostListItem> {
               IconButton(
                   onPressed: () {
                     Provider.of<FavoritePosts>(context, listen: false)
-                        .switchFavorite(widget.post.id);
-                    setState(() {
-                      _isFavorite = !_isFavorite;
-                    });
+                        .switchFavorite(context, widget.post.id)
+                        .then((value) => setState(() {
+                              _isFavorite = !_isFavorite;
+                              _likes = widget.post.likes;
+                            }));
                   },
                   icon: Icon(
                       _isFavorite ? Icons.favorite : Icons.favorite_outline)),
@@ -69,7 +73,7 @@ class _PostListItemState extends State<PostListItem> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('3 likes'),
+              Text('${widget.post.likes} likes'),
               Text(widget.post.caption),
               const Text('View all 0 comment'),
               Text(widget.post.createdAt.toDate().toString())

@@ -14,6 +14,31 @@ class Posts with ChangeNotifier {
     return _items;
   }
 
+  Post? getPostWithId(String id) {
+    var postIndex = _items.indexWhere((element) => element.id == id);
+    Post? post;
+
+    if (postIndex >= 0) {
+      post = _items.elementAt(postIndex);
+    }
+
+    return post;
+  }
+
+  Future incrementFavorite(String id) async {
+    final query = FirebaseFirestore.instance.collection('posts').doc(id);
+    final post = getPostWithId(id);
+    post?.likes++;
+    await query.update({'likes': post?.likes});
+  }
+
+  Future decrementFavorite(String id) async {
+    final query = FirebaseFirestore.instance.collection('posts').doc(id);
+    final post = getPostWithId(id);
+    post?.likes--;
+    await query.update({'likes': post?.likes});
+  }
+
   Future fetchData(Map<String, bool> favoritePosts) async {
     // final user = FirebaseAuth.instance.currentUser;
     var query = FirebaseFirestore.instance.collection('posts');
@@ -24,10 +49,10 @@ class Posts with ChangeNotifier {
       var data = e.data();
       if (favoritePosts.containsKey(e.id)) {
         return Post(e.id, data['authorId'], data['caption'], data['createdAt'],
-            data['imageUrl'], favoritePosts[e.id]!);
+            data['imageUrl'], favoritePosts[e.id]!, data['likes'] ?? 0);
       }
       return Post(e.id, data['authorId'], data['caption'], data['createdAt'],
-          data['imageUrl'], false);
+          data['imageUrl'], false, data['likes'] ?? 0);
     }).toList();
 
     _items = newItems;
@@ -40,8 +65,12 @@ class Posts with ChangeNotifier {
     final timestamp = Timestamp.now();
 
     //Add post
-    final ref = await FirebaseFirestore.instance.collection('posts').add(
-        {'caption': caption, 'createdAt': timestamp, 'authorId': user?.uid});
+    final ref = await FirebaseFirestore.instance.collection('posts').add({
+      'caption': caption,
+      'createdAt': timestamp,
+      'authorId': user?.uid,
+      'likes': 0
+    });
 
     final imgRef =
         FirebaseStorage.instance.ref().child('posts').child(ref.id + '.jpg');
@@ -56,7 +85,7 @@ class Posts with ChangeNotifier {
       'imageUrl': url,
     });
 
-    Post newPost = Post(ref.id, user!.uid, caption, timestamp, url, false);
+    Post newPost = Post(ref.id, user!.uid, caption, timestamp, url, false, 0);
 
     _items.add(newPost);
 

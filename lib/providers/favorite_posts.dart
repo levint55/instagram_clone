@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/providers/posts.dart';
+import 'package:provider/provider.dart';
 
 class FavoritePosts with ChangeNotifier {
   Map<String, bool> _items = {};
@@ -25,7 +27,7 @@ class FavoritePosts with ChangeNotifier {
     notifyListeners();
   }
 
-  Future switchFavorite(String id) async {
+  Future switchFavorite(BuildContext context, String id) async {
     final user = FirebaseAuth.instance.currentUser!;
     var query = FirebaseFirestore.instance
         .collection('favorites/${user.uid}/posts')
@@ -34,9 +36,15 @@ class FavoritePosts with ChangeNotifier {
     if (_items.containsKey(id)) {
       _items[id] = !_items[id]!;
       await query.update({'isFavorite': _items[id]});
+      if (_items[id]!) {
+        await Provider.of<Posts>(context, listen: false).incrementFavorite(id);
+      } else {
+        await Provider.of<Posts>(context, listen: false).decrementFavorite(id);
+      }
     } else {
       _items[id] = true;
       await query.set({'isFavorite': _items[id]});
+      await Provider.of<Posts>(context, listen: false).incrementFavorite(id);
     }
 
     notifyListeners();

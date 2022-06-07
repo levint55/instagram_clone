@@ -7,7 +7,8 @@ class Post {
   final Timestamp createdAt;
   final String imageUrl;
   bool isFavorite;
+  int likes;
 
   Post(this.id, this.authorId, this.caption, this.createdAt, this.imageUrl,
-      this.isFavorite);
+      this.isFavorite, this.likes);
 }
