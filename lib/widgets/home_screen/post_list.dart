@@ -5,16 +5,16 @@ import 'package:instagram_clone/widgets/home_screen/post_list_item.dart';
 import 'package:provider/provider.dart';
 
 class PostList extends StatelessWidget {
-  const PostList({Key? key}) : super(key: key);
+  final bool favoriteOnly;
+
+  const PostList({Key? key, required this.favoriteOnly}) : super(key: key);
 
   Future loadData(BuildContext context) async {
     final FavoritePosts favoritePosts =
         Provider.of<FavoritePosts>(context, listen: false);
     await favoritePosts.fetchData();
     await Provider.of<Posts>(context, listen: false)
-        .fetchData(favoritePosts.items);
-
-    print(favoritePosts.items);
+        .fetchData(favoritePosts.items, favoriteOnly);
   }
 
   @override

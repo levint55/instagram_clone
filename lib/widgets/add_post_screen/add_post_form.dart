@@ -1,8 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/providers/posts.dart';
@@ -59,7 +56,7 @@ class _AddPostFormState extends State<AddPostForm> {
     try {
       if (isValid) {
         await Provider.of<Posts>(context, listen: false)
-            .addData(_caption!, _pickedImage!);
+            .addData(context, _caption!, _pickedImage!);
 
         setState(() {
           _caption = null;

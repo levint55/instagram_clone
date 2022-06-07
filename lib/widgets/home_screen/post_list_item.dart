@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post.dart';
 import 'package:instagram_clone/providers/favorite_posts.dart';
-import 'package:instagram_clone/providers/posts.dart';
 import 'package:provider/provider.dart';
 
 class PostListItem extends StatefulWidget {
@@ -45,7 +44,7 @@ class _PostListItemState extends State<PostListItem> {
                       NetworkImage('https://via.placeholder.com/50x50'),
                 ),
               ),
-              const Text('Username')
+              Text(widget.post.authorUsername)
             ],
           ),
           Center(
@@ -73,7 +72,7 @@ class _PostListItemState extends State<PostListItem> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${widget.post.likes} likes'),
+              Text('$_likes likes'),
               Text(widget.post.caption),
               const Text('View all 0 comment'),
               Text(widget.post.createdAt.toDate().toString())

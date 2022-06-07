@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/screens/add_post_screen.dart';
+import 'package:instagram_clone/screens/favorite_screen.dart';
 import 'package:instagram_clone/widgets/home_screen/post_list.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const HomeElement(),
       const Placeholder(),
       AddPostScreen(navigateToPage),
-      const Placeholder(),
+      const FavoriteScreen(),
       const Placeholder(),
     ];
   }
@@ -115,7 +116,7 @@ class HomeElement extends StatelessWidget {
         constraints:
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 150),
         height: double.infinity,
-        child: const PostList(),
+        child: const PostList(favoriteOnly: false),
       ),
     );
   }
