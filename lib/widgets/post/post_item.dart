@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post.dart';
+import 'package:instagram_clone/providers/favorite_posts.dart';
+import 'package:provider/provider.dart';
 
-class PostItem extends StatelessWidget {
+class PostItem extends StatefulWidget {
   final Post post;
   const PostItem({Key? key, required this.post}) : super(key: key);
+
+  @override
+  State<PostItem> createState() => _PostItemState();
+}
+
+class _PostItemState extends State<PostItem> {
+  late bool? _isFavorite;
+  late int? _likes;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.post.isFavorite;
+    _likes = widget.post.likes;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,29 +35,28 @@ class PostItem extends StatelessWidget {
                     NetworkImage('https://via.placeholder.com/50x50'),
               ),
             ),
-            Text(post.authorUsername!)
+            Text(widget.post.authorUsername!)
           ],
         ),
         Center(
-          child: Image(image: NetworkImage(post.imageUrl!)),
+          child: Image(image: NetworkImage(widget.post.imageUrl!)),
         ),
         Row(
           children: [
             IconButton(
                 onPressed: () {
-                  // Provider.of<FavoritePosts>(context, listen: false)
-                  //       .switchFavorite(context, widget.post.id!)
-                  //       .then((value) => setState(() {
-                  //             _isFavorite =
-                  //                 Provider.of<Post>(context, listen: false)
-                  //                     .isFavorite!;
-                  //             _likes = Provider.of<Post>(context, listen: false)
-                  //                 .likes!;
-                  //           }));
+                  Provider.of<FavoritePosts>(context, listen: false)
+                      .switchFavorite(context, widget.post.id!)
+                      .then((value) => setState(() {
+                            _isFavorite =
+                                Provider.of<Post>(context, listen: false)
+                                    .isFavorite!;
+                            _likes = Provider.of<Post>(context, listen: false)
+                                .likes!;
+                          }));
                 },
-                icon: Icon(post.isFavorite!
-                    ? Icons.favorite
-                    : Icons.favorite_outline)),
+                icon: Icon(
+                    _isFavorite! ? Icons.favorite : Icons.favorite_outline)),
             IconButton(onPressed: () {}, icon: const Icon(Icons.comment)),
             IconButton(onPressed: () {}, icon: const Icon(Icons.send)),
             IconButton(
@@ -52,10 +68,10 @@ class PostItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${post.likes} likes'),
-              Text(post.caption!),
+              Text('$_likes likes'),
+              Text(widget.post.caption!),
               const Text('View all 0 comment'),
-              Text(post.createdAt!.toDate().toString())
+              Text(widget.post.createdAt!.toDate().toString())
             ],
           ),
         )
