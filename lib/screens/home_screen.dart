@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/providers/user.dart' as instagram_user;
 import 'package:instagram_clone/screens/add_post_screen.dart';
 import 'package:instagram_clone/screens/favorite_screen.dart';
 import 'package:instagram_clone/screens/profile_screen.dart';
 import 'package:instagram_clone/widgets/home_screen/post_list.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -74,8 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: Colors.grey,
           ),
         ],
-        onTap: (index) {
+        onTap: (index) async {
           if (index != _selectedPage) {
+            final user = Provider.of<instagram_user.User>(context, listen: false);
+            if (index == 4) {
+              user.id = FirebaseAuth.instance.currentUser?.uid;
+            }
+            await user.fetchData();
             setState(() {
               _selectedPage = index;
             });
@@ -114,8 +121,7 @@ class HomeElement extends StatelessWidget {
     return SingleChildScrollView(
       child: Container(
         margin: const EdgeInsets.all(10),
-        constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 150),
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 150),
         height: double.infinity,
         child: const PostList(favoriteOnly: false),
       ),

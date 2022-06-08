@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post.dart';
-import 'package:instagram_clone/providers/current_user.dart';
+import 'package:instagram_clone/providers/user.dart' as instagram_user;
 import 'package:provider/provider.dart';
 
 class Posts with ChangeNotifier {
@@ -27,17 +27,19 @@ class Posts with ChangeNotifier {
   }
 
   Future fetchData(Map<String, bool> favoritePosts,
-      [bool showFavoriteOnly = false,
-      bool showCurrentUserPosts = false]) async {
-    final user = FirebaseAuth.instance.currentUser;
+      [bool showFavoriteOnly = false, String userId = '']) async {
     var query = FirebaseFirestore.instance.collection('posts');
-
     QuerySnapshot<Map<String, dynamic>> snapshot;
 
-    if (showCurrentUserPosts) {
-      snapshot = await query.where('authorId', isEqualTo: user?.uid).get();
+    if (userId.isNotEmpty) {
+      // Fetch specific user post
+      snapshot = await query
+          .where('authorId', isEqualTo: userId)
+          .orderBy('createdAt', descending: true)
+          .get();
     } else {
-      snapshot = await query.get();
+      //Fetch all post
+      snapshot = await query.orderBy('createdAt', descending: true).get();
     }
 
     var docs = snapshot.docs;
@@ -79,7 +81,8 @@ class Posts with ChangeNotifier {
   Future addData(BuildContext context, String caption, File pickedImage) async {
     final user = FirebaseAuth.instance.currentUser;
     final timestamp = Timestamp.now();
-    CurrentUser currentUser = Provider.of<CurrentUser>(context, listen: false);
+    instagram_user.User currentUser =
+        Provider.of<instagram_user.User>(context, listen: false);
 
     //Add post
     final ref = await FirebaseFirestore.instance.collection('posts').add({

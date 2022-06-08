@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post.dart';
 import 'package:instagram_clone/providers/favorite_posts.dart';
+import 'package:instagram_clone/providers/user.dart';
+import 'package:instagram_clone/screens/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 
 class PostItem extends StatefulWidget {
@@ -31,11 +33,18 @@ class _PostItemState extends State<PostItem> {
             Container(
               margin: const EdgeInsets.only(right: 10),
               child: const CircleAvatar(
-                backgroundImage:
-                    NetworkImage('https://via.placeholder.com/50x50'),
+                backgroundImage: NetworkImage('https://via.placeholder.com/50x50'),
               ),
             ),
-            Text(widget.post.authorUsername!)
+            InkWell(
+              child: Text(widget.post.authorUsername!),
+              onTap: () async {
+                final user = Provider.of<User>(context, listen: false);
+                user.id = widget.post.authorId;
+                await user.fetchData();
+                Navigator.of(context).pushNamed(UserProfileScreen.routeName);
+              },
+            )
           ],
         ),
         Center(
@@ -48,19 +57,14 @@ class _PostItemState extends State<PostItem> {
                   Provider.of<FavoritePosts>(context, listen: false)
                       .switchFavorite(context, widget.post.id!)
                       .then((value) => setState(() {
-                            _isFavorite =
-                                Provider.of<Post>(context, listen: false)
-                                    .isFavorite!;
-                            _likes = Provider.of<Post>(context, listen: false)
-                                .likes!;
+                            _isFavorite = Provider.of<Post>(context, listen: false).isFavorite!;
+                            _likes = Provider.of<Post>(context, listen: false).likes!;
                           }));
                 },
-                icon: Icon(
-                    _isFavorite! ? Icons.favorite : Icons.favorite_outline)),
+                icon: Icon(_isFavorite! ? Icons.favorite : Icons.favorite_outline)),
             IconButton(onPressed: () {}, icon: const Icon(Icons.comment)),
             IconButton(onPressed: () {}, icon: const Icon(Icons.send)),
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.bookmark_outline)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.bookmark_outline)),
           ],
         ),
         Align(
