@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post.dart';
 import 'package:instagram_clone/providers/favorite_posts.dart';
+import 'package:instagram_clone/providers/following.dart';
 import 'package:instagram_clone/providers/posts.dart';
 import 'package:instagram_clone/providers/user.dart' as instagram_user;
 import 'package:instagram_clone/screens/post_detail_screen.dart';
@@ -29,41 +30,47 @@ class ProfileScreen extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Column(
-                  children: [CircleAvatar(), Text(user.username!)],
+                  children: [const CircleAvatar(), Text(user.username!)],
                 ),
                 Consumer<Posts>(
                     builder: (context, value, child) =>
                         ProfileHeaderItem(text: 'Posts', number: value.items.length.toString())),
-                ProfileHeaderItem(text: 'Followers', number: '0'),
-                ProfileHeaderItem(text: 'Following', number: '0'),
+                const ProfileHeaderItem(text: 'Followers', number: '0'),
+                const ProfileHeaderItem(text: 'Following', number: '0'),
               ],
             ),
           ),
           if (currentLoggedInUser.uid != user.id)
             Container(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Expanded(
                       child: Container(
-                    margin: EdgeInsets.all(5),
-                    child: ElevatedButton(onPressed: () {}, child: Text('Follow')),
+                    margin: const EdgeInsets.all(5),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Provider.of<Following>(context, listen: false).userId =
+                              currentLoggedInUser.uid;
+                          Provider.of<Following>(context, listen: false).addData(user);
+                        },
+                        child: const Text('Follow')),
                   )),
                   Expanded(
                       child: Container(
-                    margin: EdgeInsets.all(5),
-                    child: ElevatedButton(onPressed: () {}, child: Text('Message')),
+                    margin: const EdgeInsets.all(5),
+                    child: ElevatedButton(onPressed: () {}, child: const Text('Message')),
                   ))
                 ],
               ),
             ),
-          Divider(
+          const Divider(
             thickness: 1,
             height: 20,
           ),
@@ -71,7 +78,7 @@ class ProfileScreen extends StatelessWidget {
             future: loadData(context),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
@@ -79,11 +86,11 @@ class ProfileScreen extends StatelessWidget {
                 builder: (context, value, child) => GridView.builder(
                   shrinkWrap: true,
                   itemCount: value.items.length,
-                  physics: ScrollPhysics(),
-                  padding: EdgeInsets.all(5),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                  physics: const ScrollPhysics(),
+                  padding: const EdgeInsets.all(5),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
                   itemBuilder: (context, index) => Container(
-                    margin: EdgeInsets.all(5),
+                    margin: const EdgeInsets.all(5),
                     child: InkWell(
                       onTap: () {
                         Post item = value.items[index];

@@ -22,8 +22,8 @@ class UserProfileScreen extends StatelessWidget {
                 await Provider.of<Posts>(context, listen: false).fetchData(favoritePosts.items);
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.arrow_back))),
-      body: ProfileScreen(),
+              icon: const Icon(Icons.arrow_back))),
+      body: const ProfileScreen(),
     );
   }
 }

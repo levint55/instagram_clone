@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/firebase_options.dart';
 import 'package:instagram_clone/models/post.dart';
+import 'package:instagram_clone/providers/following.dart';
 import 'package:instagram_clone/providers/user.dart' as instagram_user;
 import 'package:instagram_clone/providers/favorite_posts.dart';
 import 'package:instagram_clone/providers/posts.dart';
@@ -24,8 +25,7 @@ class MyApp extends StatelessWidget {
 
   Future loadData(BuildContext context) async {
     final firebaseUser = FirebaseAuth.instance.currentUser;
-    instagram_user.User user =
-        Provider.of<instagram_user.User>(context, listen: false);
+    instagram_user.User user = Provider.of<instagram_user.User>(context, listen: false);
     user.id = firebaseUser!.uid;
     await user.fetchData();
   }
@@ -44,9 +44,9 @@ class MyApp extends StatelessWidget {
           create: (context) => instagram_user.User(null, null, null),
         ),
         ChangeNotifierProvider<Post>(
-          create: (context) =>
-              Post(null, null, null, null, null, null, null, null),
+          create: (context) => Post(null, null, null, null, null, null, null, null),
         ),
+        ChangeNotifierProvider<Following>(create: (context) => Following()),
       ],
       child: MaterialApp(
         title: 'Instagram',
